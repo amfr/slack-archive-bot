@@ -117,17 +117,20 @@ def handle_query(event):
                     except:
                         raise ValueError('%s not a valid number' % p[1])
 
-        query = 'SELECT message,user,channel,timestamp FROM messages WHERE message LIKE "%%%s%%"' % " ".join(text)
+
+        substitutions = ['%' + ' '.join(text) + '%']
+        query = 'SELECT message, user, channel, timestamp FROM messages WHERE message LIKE ?'
         if user:
-            query += ' AND user="%s"' % user
+            substitutions.append(user)
+            query += ' AND user=?'
         if channel:
-            query += ' AND channel="%s"' % channel
+            substitutions.append(channel)
+            query += ' AND channel=?'
         if sort:
-            query += ' ORDER BY timestamp %s' % sort
+            substitutions.append(sort)
+            query += ' ORDER BY timestamp ?'
 
-        print(query)
-
-        cursor.execute(query)
+        cursor.execute(query, substitutions)
 
         res = cursor.fetchmany(limit)
         if res:
