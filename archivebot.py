@@ -151,11 +151,6 @@ def handle_message(event):
     if 'username' in event and event['username'] == 'bot':
         return
 
-    try:
-        print(event)
-    except:
-        print("*"*20)
-
     # If it's a DM, treat it as a search query
     if event['channel'][0] == 'D':
         handle_query(event)
