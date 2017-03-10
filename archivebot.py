@@ -117,7 +117,7 @@ def handle_query(event):
                     except:
                         raise ValueError('%s not a valid number' % p[1])
 
-        query = 'SELECT message,user,timestamp FROM messages WHERE message LIKE "%%%s%%"' % " ".join(text)
+        query = 'SELECT message,user,channel,timestamp FROM messages WHERE message LIKE "%%%s%%"' % " ".join(text)
         if user:
             query += ' AND user="%s"' % user
         if channel:
@@ -132,8 +132,8 @@ def handle_query(event):
         res = cursor.fetchmany(limit)
         if res:
             send_message('\n'.join(
-                ['%s (@%s, %s)' % (
-                    i[0], get_user_name(i[1]), convert_timestamp(i[2])
+                ['%s (@%s, #%s, %s)' % (
+                    i[0], get_user_name(i[1]), get_channel_name(i[2]), convert_timestamp(i[3])
                 ) for i in res]
             ), event['channel'])
         else:
